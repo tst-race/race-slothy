@@ -1,0 +1,12 @@
+# put requirements used by python code here.
+# these will be installed before running coverage tests.
+django
+django-sslserver
+pylddwrap
+requests
+z3-solver
+tzdata
+aiohttp 
+aiofiles 
+base58 
+orjson

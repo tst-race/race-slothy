@@ -1,0 +1,9 @@
+shard-registry:
+    container_name: shard-registry
+    hostname: shard-registry
+    image: ghcr.io/tst-race/race-slothy/shard-registry-server:1.0.4
+    networks:
+    - rib-overlay-network
+    # Setting REGISTRY_DEBUG allows unlimited downloads per shard
+    environment:
+      - REGISTRY_DEBUG=TRUE

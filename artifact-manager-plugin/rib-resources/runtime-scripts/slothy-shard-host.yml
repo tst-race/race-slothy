@@ -1,0 +1,6 @@
+{shard_host_name}:
+    container_name: {shard_host_name}
+    hostname: {shard_host_name}
+    image: ghcr.io/tst-race/race-slothy/shard-host-server:1.0.3
+    networks:
+    - rib-overlay-network

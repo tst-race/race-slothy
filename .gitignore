@@ -1,0 +1,16 @@
+.bash_history
+.python_history
+*/z3.log
+bin/
+*.so
+*.so.?
+*.so.??
+*.so.enc
+obj/
+src/*.o
+src/*.a
+src/aes_b64
+so/.DS_Store
+.DS_Store
+out
+.vscode

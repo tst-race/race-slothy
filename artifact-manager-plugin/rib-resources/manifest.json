@@ -1,0 +1,12 @@
+{
+    "plugins": [
+        {
+            "file_path": "PluginArtifactManagerSlothy",
+            "plugin_type": "ArtifactManager",
+            "file_type": "shared_library",
+            "node_type": "any",
+            "shared_library_path": "libslothy-amp.so",
+            "config_path": "PluginArtifactManagerSlothy/"
+        }
+    ]
+}

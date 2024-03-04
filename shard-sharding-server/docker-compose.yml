@@ -1,0 +1,39 @@
+version: '3'
+#-------------------------------------------------------------------------------
+services:
+  race-client:
+    image: python
+    tty: true
+    networks:
+      - racenet
+  shard-host:
+    image: shard-host-server:latest
+    tty: true
+    # ports:
+    #   - 4443-4453:443 #Port range scales with 'docker scale'
+    networks:
+      - racenet
+  race-registry-00001:
+    image: shard-registry-server:latest
+    hostname: shard-registry
+    # environment:
+    #   - REGISTRY_DEBUG=TRUE
+    tty: true
+    # ports:
+    #   - 8080:443 #Port range scales with 'docker scale'
+    networks:
+      - racenet
+  shard-sharding:
+    image: pldc.peratonlabs.com:5000/microcon/shard-sharding-server
+    hostname: shard-sharding
+    ports:
+      - 8000:8000 #Port range scales with 'docker scale'
+    networks:
+      - racenet
+#-------------------------------------------------------------------------------
+volumes:
+  db-data:
+#-------------------------------------------------------------------------------
+networks:
+  racenet:
+    name: racenet

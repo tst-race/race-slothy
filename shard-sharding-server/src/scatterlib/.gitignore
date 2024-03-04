@@ -1,0 +1,12 @@
+.DS_Store
+registry/shards/node_*
+.coverage
+.mypy_cache/
+venv/
+*.pyc
+lib*
+nacl*
+dist/
+scatter.egg-info/
+build/
+data/*updated*

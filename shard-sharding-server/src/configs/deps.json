@@ -1,0 +1,19 @@
+[
+    {
+        "uuid": "71914016-a1ed-4e14-9066-733b0ddaba1c",
+        "name": "Testfile",
+        "filename": "/tmp/testfile_10k",
+        "deptype": "Testfile",
+        "properties": {
+            "maximize": {
+                "stability": 1.0,
+                "speed": 1.0,
+                "covertness": 1.0
+            },
+            "minimize": {
+                "cost": 1.0
+            }
+        },
+        "instances": []
+    }
+]

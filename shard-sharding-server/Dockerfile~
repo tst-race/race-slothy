@@ -1,0 +1,54 @@
+FROM ubuntu:20.04
+ENV SECURE_SSL_REDIRECT=True
+ENV SECURE_HSTS_SECONDS=5
+ENV SECURE_HSTS_INCLUDE_SUBDOMAINS=False
+ENV SECURE_FRAME_DENY=True
+ENV SECURE_CONTENT_TYPE_NOSNIFF=True
+ENV SECURE_BROWSER_XSS_FILTER=True
+ENV SESSION_COOKIE_SECURE=True
+ENV SESSION_COOKIE_HTTPONLY=True
+ENV CERT_PATH=/etc/ssl/certs/server.pem
+ENV LIBSODIUM=/usr/lib/x86_64-linux-gnu/libsodium.so
+ENV LIBSSS=/root/lib/libsss.so
+
+RUN apt-get update && apt-get install -y \
+	wget \
+    openssl \
+	libjerasure-dev \
+	python3 \
+	python3-pip \
+	libssl1.1 \
+	libsodium-dev \
+	bsdmainutils
+
+# Acquire IPFS tooling
+WORKDIR /tmp
+RUN wget https://dist.ipfs.tech/kubo/v0.19.0/kubo_v0.19.0_linux-amd64.tar.gz && \
+tar xzf kubo_v0.19.0_linux-amd64.tar.gz && \
+bash ./kubo/install.sh && \
+ipfs init
+
+COPY requirements/requirements.txt /root/
+RUN pip install -r /root/requirements.txt
+
+RUN openssl req -new -x509 -keyout $CERT_PATH -out $CERT_PATH -days 365 -nodes \
+	-subj "/C=CN/ST=./L=./O=./OU=../CN=."
+
+# copy artifacts from slothy build (see .gitlab_ci.yml to see where these come from)
+COPY out/artifacts/lib/ /root/lib
+COPY src/ /root/scatter_server
+# copy in testfile_10k (zeros) (see .gitlab_ci.yml to see where these come from)
+RUN dd if=/dev/zero of=/tmp/testfile_10kb bs=1 count=0 seek=10240
+WORKDIR /root/scatter_server
+
+RUN pip install /root/scatter_server/scatterlib
+
+
+RUN rm -rf media/*
+
+RUN python3 server.py makemigrations \
+ && python3 server.py migrate --run-syncdb \
+ && python3 server.py sqlflush
+
+CMD ["bash", "-c", "nohup ipfs daemon >/dev/null 2>&1 & python3 server.py runsslserver 0.0.0.0:8000 --certificate $CERT_PATH --key $CERT_PATH"]
+

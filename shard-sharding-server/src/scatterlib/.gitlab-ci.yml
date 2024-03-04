@@ -1,0 +1,102 @@
+image: pldc.peratonlabs.com:5000/microcon/ci_container
+
+stages:
+  - build
+  - test
+  - deploy
+  - trigger
+
+variables:
+  REGISTRY_URL: pldc.peratonlabs.com:5000
+
+before_script:
+  - python3 -V
+
+python_tests:
+    stage: build
+    script:
+     - ./run_tests.sh
+    artifacts:
+        expire_in: 1 week
+
+docker_build:
+    stage: build
+    script:
+     - docker build -t $REGISTRY_URL/microcon/scatter .
+    artifacts:
+        expire_in: 1 week
+
+test_shard_reconstruct:
+    stage: test
+    script:
+      - export CONTAINER_NAME=$(docker ps -a | grep $HOSTNAME | grep build | awk '{print $NF}')
+      - export VOLUME_NAME=$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/builds"}}{{.Source}}{{end}}{{end}}' $CONTAINER_NAME)
+      - export MOUNT_BASE=$VOLUME_NAME/$CI_PROJECT_PATH/
+      - docker inspect $CONTAINER_NAME
+      - env
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py shard README.md --shardprefix README.md.
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py reconstruct  README.md. --reconstructed README.md.reconstructed
+      - diff README.md README.md.reconstructed
+    artifacts:
+        expire_in: 1 week
+
+test_encrypt_decrypt:
+    stage: test
+    script:
+      - export CONTAINER_NAME=$(docker ps -a | grep $HOSTNAME | grep build | awk '{print $NF}')
+      - export VOLUME_NAME=$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/builds"}}{{.Source}}{{end}}{{end}}' $CONTAINER_NAME)
+      - export MOUNT_BASE=$VOLUME_NAME/$CI_PROJECT_PATH/
+      - docker inspect $CONTAINER_NAME
+      - env
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py encrypt README.md --json README.md.json --encrypted README.md.enc
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py decrypt README.md.enc --json README.md.json --decrypted README.md.decrypted
+      - diff README.md README.md.decrypted
+    artifacts:
+        expire_in: 1 week
+
+test_enc_shard_recons_dec:
+    stage: test
+    script:
+      - export CONTAINER_NAME=$(docker ps -a | grep $HOSTNAME | grep build | awk '{print $NF}')
+      - export VOLUME_NAME=$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/builds"}}{{.Source}}{{end}}{{end}}' $CONTAINER_NAME)
+      - export MOUNT_BASE=$VOLUME_NAME/$CI_PROJECT_PATH/
+      - docker inspect $CONTAINER_NAME
+      - env
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py encrypt_and_shard README.md --shardprefix README.md.json. --encrypted README.md.enc --json README.md.json
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py reconstruct README.md.json. --reconstructed README.md.json.reconstructed
+      - diff README.md.json README.md.json.reconstructed
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py decrypt README.md.enc --json README.md.json.reconstructed --decrypted README.md.enc.dec
+      - diff README.md README.md.enc.dec
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py reconstruct_and_decrypt README.md.json. README.md.enc --json README.md.json --decrypted README.md.decrypted
+      - diff README.md README.md.decrypted
+    artifacts:
+        expire_in: 1 week
+
+test_enc_shard_delete_recons_dec:
+    stage: test
+    script:
+      - export CONTAINER_NAME=$(docker ps -a | grep $HOSTNAME | grep build | awk '{print $NF}')
+      - export VOLUME_NAME=$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/builds"}}{{.Source}}{{end}}{{end}}' $CONTAINER_NAME)
+      - export MOUNT_BASE=$VOLUME_NAME/$CI_PROJECT_PATH/
+      - docker inspect $CONTAINER_NAME
+      - env
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py encrypt_and_shard README.md --shardprefix README.md.json. --encrypted README.md.enc --json README.md.json
+      - rm README.md.json.1* README.md.json.rsblob && sleep 0.1
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py reconstruct_rs README.md.json. --reconstructed README.md.json.rs_blob
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py reconstruct_sss README.md.json.rs_blob --reconstructed README.md.json
+      - docker run -i --rm -v $MOUNT_BASE:/root/scatter $REGISTRY_URL/microcon/scatter scatter.py decrypt README.md.enc --json README.md.json --decrypted README.md.enc.dec
+      - diff README.md README.md.enc.dec
+    artifacts:
+        expire_in: 1 week
+
+docker_push:
+    stage: deploy
+    script:
+     - docker push $REGISTRY_URL/microcon/scatter
+    artifacts:
+        expire_in: 1 week
+        
+trigger_shard_sharding_server:
+    stage: trigger
+    script:
+     - curl -X POST --insecure -F token=30e8ffde2dc60dc5616c551434fa5a -F ref=master https://pldc.peratonlabs.com:10443/api/v4/projects/209/trigger/pipeline

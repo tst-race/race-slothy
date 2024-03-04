@@ -1,0 +1,10 @@
+APP_PLATFORM := android-${ANDROID_API}
+APP_ABI := ${ANDROID_ABI}
+APP_STL := c++_shared
+APP_CFLAGS += -Os -ffunction-sections -fdata-sections
+APP_LDFLAGS += -Wl,--gc-sections
+# APP_CPPFLAGS += Os -frtti
+# APP_CPPFLAGS += -fexceptions
+APP_CFLAGS := -DDEBUG
+# NDK_TOOLCHAIN_VERSION := gcc
+NDK_TOOLCHAIN_VERSION := clang

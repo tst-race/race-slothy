@@ -1,0 +1,46 @@
+{% extends "pages/layouts/base.html" %}
+
+{% block content %}
+<h1>Click an uploaded file to shard</h1>
+
+  {% if documents %}
+  <ul>
+  Uploaded files:
+    {% for obj in documents %}
+      <li>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="file", value="{{ obj.document.url }}" class="btn-link">{{ obj.document.name }} <small>(Uploaded at: {{ obj.uploaded_at }})</small></button>
+        </form>
+<!--         <a href="{{ obj.document.url }}">{{ obj.document.name }}</a>
+        <small>(Uploaded at: {{ obj.uploaded_at }})</small>
+ -->
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if encrypted_files %}
+  <ul>
+  Encrypted Files:
+    {% for obj in encrypted_files %}
+      <li>
+        <a href="{{ obj.document.url }}">{{ obj.document.name }}</a>
+        <small>(Sharded at: {{ obj.uploaded_at }}, Pushed: {{ obj.pushed }})</small>
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if shards %}
+  <ul>
+  Shards:
+    {% for obj in shards %}
+      <li>
+        <a href="{{ obj.document.url }}">{{ obj.document.name }}</a>
+        <small>(Sharded at: {{ obj.uploaded_at }}, Pushed: {{ obj.pushed }})</small>
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endblock %}

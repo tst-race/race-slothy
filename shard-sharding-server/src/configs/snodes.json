@@ -1,0 +1,36 @@
+[
+    {
+        "uuid": "76b2a371-18d6-439d-a658-2f7b0f5f2889",
+        "address": "ipfs.io",
+        "properties": {
+            "maximize": {
+                "stability": 6.1,
+                "speed": 3.9
+            },
+            "minimize": {
+                "scrutiny": 5.9,
+                "opression": 9.9
+            }
+        },
+        "method": "ipfs",
+        "capacity": 1073741824,
+        "shards": []
+    },
+    {
+        "uuid": "76b2a371-18d6-439d-a658-2f7b0f5f2889",
+        "address": "race-server_shard-host_1",
+        "properties": {
+            "maximize": {
+                "stability": 6.1,
+                "speed": 3.9
+            },
+            "minimize": {
+                "scrutiny": 5.9,
+                "opression": 9.9
+            }
+        },
+        "method": "https",
+        "capacity": 1073741824,
+        "shards": []
+    }
+]

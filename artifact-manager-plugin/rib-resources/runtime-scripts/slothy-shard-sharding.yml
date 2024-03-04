@@ -1,0 +1,8 @@
+shard-sharding:
+    container_name: shard-sharding
+    hostname: shard-sharding
+    image: ghcr.io/tst-race/race-slothy/shard-sharding-server:1.0.4
+    ports:
+    - 8502:8000
+    networks:
+    - rib-overlay-network

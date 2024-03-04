@@ -1,0 +1,7 @@
+.bash_history
+.python_history
+scatter_server/db.sqlite3
+scatter_server/media/
+scatter_server/pages/__pycache__/
+scatter_server/pages/templates/pages/.DS_Store
+scatter_server/scatter_server/__pycache__/

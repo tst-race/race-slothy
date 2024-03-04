@@ -1,0 +1,12 @@
+{
+    "name": "libPluginTa1ClientTwoSixStub.so",
+    "depends_on": [
+        "libstdc++.so.6",
+        "libgcc_s.so.1",
+        "libm.so.6"
+    ],
+    "conflicts_with": [],
+    "arch": "x86_64",
+    "key": "gVua/aVicAXMYNtCgAfpnnoq8neiojYiuNXPyypfbGcB",
+    "nonce": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+}

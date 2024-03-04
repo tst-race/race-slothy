@@ -1,0 +1,50 @@
+[
+    {
+        "uuid": "1a50cf1c-8899-4dcf-85ed-0c1b8b4e3155",
+        "address": "race-server_race-client_1",
+        "registry": "7ee9440f-04a6-470b-addb-183f11ef0302",
+        "properties": {
+            "maximize": {
+                "covertness": 5.9,
+                "trust": 2.8
+            },
+            "minimize": {
+                "scrutiny": 7.5,
+                "opression": 4.8
+            }
+        },
+        "shards": []
+    },
+    {
+        "uuid": "d85b9b59-9f4b-4a23-b9e1-2056e22145bd",
+        "address": "race-server_race-client_2",
+        "registry": "7ee9440f-04a6-470b-addb-183f11ef0302",
+        "properties": {
+            "maximize": {
+                "covertness": 6.0,
+                "trust": 3.9
+            },
+            "minimize": {
+                "scrutiny": 9.0,
+                "opression": 1.6
+            }
+        },
+        "shards": []
+    },
+    {
+        "uuid": "c4571135-f3e4-4dec-a7d5-0bfb30c0abb6",
+        "address": "race-server_race-client_3",
+        "registry": "7ee9440f-04a6-470b-addb-183f11ef0302",
+        "properties": {
+            "maximize": {
+                "covertness": 1.7,
+                "trust": 2.1
+            },
+            "minimize": {
+                "scrutiny": 8.5,
+                "opression": 3.5
+            }
+        },
+        "shards": []
+    }
+]
